@@ -138,6 +138,44 @@ const markAsReady = async (orderId) => {
         return [order, ...currentOrders];
       });
     });
+    socket.on("new-order", (order) => {
+  console.log("🍽 Yeni Sipariş:", order);
+
+  setOrders((currentOrders) => {
+    const orderAlreadyExists = currentOrders.some(
+      (currentOrder) => currentOrder.id === order.id,
+    );
+
+    if (orderAlreadyExists) {
+      return currentOrders;
+    }
+
+    return [order, ...currentOrders];
+  });
+});
+
+socket.on("order-updated", (updatedOrder) => {
+  console.log("🔄 Sipariş güncellendi:", updatedOrder);
+
+  setOrders((currentOrders) => {
+    if (
+      updatedOrder.status === "SERVED" ||
+      updatedOrder.status === "CANCELLED"
+    ) {
+      return currentOrders.filter(
+        (order) => order.id !== updatedOrder.id,
+      );
+    }
+
+    return currentOrders.map((order) =>
+      order.id === updatedOrder.id ? updatedOrder : order,
+    );
+  });
+});
+
+return () => {
+  socket.disconnect();
+};
 
     return () => {
       socket.disconnect();
