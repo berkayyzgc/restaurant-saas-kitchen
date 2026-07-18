@@ -313,10 +313,9 @@ function App() {
         }}
       >
         {orders.map((order) => {
-          const canCancel = [
-            "PENDING",
-            "ACCEPTED",
-            "PREPARING",
+          const canCancel = ![
+            "SERVED",
+            "CANCELLED",
           ].includes(order.status);
 
           return (
@@ -472,18 +471,7 @@ function App() {
                 )}
               </div>
 
-              {order.status === "READY" && (
-                <p
-                  style={{
-                    margin: "14px 0 0",
-                    color: "#9ccc9e",
-                    fontSize: "13px",
-                  }}
-                >
-                  Hazır sipariş mutfak
-                  ekranından iptal edilemez.
-                </p>
-              )}
+
             </div>
           );
         })}
